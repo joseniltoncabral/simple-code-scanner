@@ -52,7 +52,7 @@ function search {
         local relativeFileLocation=`echo $baseLine | cut -d: -f1`        
         local fileLocation=`echo $1/tree/master/$relativeFileLocation#L$lineNumber`
         local fileName=`echo ${relativeFileLocation##*/}`
-        local comment=`echo $baseLine | cut -d: -f3`
+        local comment=`echo $baseLine | cut -d: -f3-`
 		
         appendReportLine "<tr>"
         appendReportLine "<td align=\"center\">$lineCounter</td>"
