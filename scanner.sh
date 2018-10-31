@@ -1,5 +1,5 @@
 # Constraints
-GREP_OPTIONS="--exclude={project.assets.json,*.csproj} --exclude-dir={bin,obj}"
+GREP_OPTIONS="--exclude={project.assets.json,*.csproj} --exclude-dir={bin,obj.git}"
 sensitiveWords="pass\|token\|secret\|key\|auth\|connection\|affiliation"
 sensitiveHttpComponents="HttpClient\|IHttpClient\|HttpClientFactory"
 sensitiveSQLComponents="DbContext\|SqlConnection\|SqlCommand\|SqlDataReader"
@@ -46,12 +46,14 @@ function search {
     appendReportLine "<th width=\"8%\">Confirm?</th>"
     appendReportLine "</tr>"
 
-    grep $2 -IrinH . | while read -r line ; do
-        local fileLocation=`echo $line | cut -d: -f1-2`
-        local fileName=`basename $fileLocation`
-        local lineNumber=`echo $line | cut -d: -f3`
-        local comment=`echo $line | cut -d: -f4-`
-
+    grep -IrinH $2 . | while read -r line ; do
+        local baseLine=`echo $line | cut -d/ -f2-`
+        local lineNumber=`echo $baseLine | cut -d: -f2`
+        local relativeFileLocation=`echo $baseLine | cut -d: -f1`        
+        local fileLocation=`echo $1/tree/master/$relativeFileLocation#L$lineNumber`
+        local fileName=`echo ${relativeFileLocation##*/}`
+        local comment=`echo $baseLine | cut -d: -f3`
+		
         appendReportLine "<tr>"
         appendReportLine "<td align=\"center\">$lineCounter</td>"
         appendReportLine "<td><a href="$fileLocation">$fileName ($lineNumber)</a></td>"
@@ -67,7 +69,7 @@ function search {
 }
 
 function searchForSensitiveWords {
-    search $1 $sensitiveWords "Sensitive words found"
+    search $1 $sensitiveWords "Sensitive data found"
 }
 
 function searchForSensitiveHttpComponents {
