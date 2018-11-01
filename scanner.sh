@@ -18,6 +18,7 @@ function startReportCreation {
     appendReportLine "<html>"
     appendReportLine "<head>"
     appendReportLine "<link rel=\"stylesheet\" href=\"libs/styles/jquery-ui.css\">"
+    appendReportLine "<link rel=\"stylesheet\" href=\"libs/styles/styles.css\">"
     appendReportLine "<script src=\"libs/javascript/jquery-1.12.4.js\"></script>"
     appendReportLine "<script src=\"libs/javascript/jquery-ui.js\"></script>"
     appendReportLine "<script src=\"libs/javascript/main.js\"></script>"
@@ -38,7 +39,7 @@ function search {
 
     appendReportLine "<h3>$3</h3>"
     appendReportLine "<div>"
-    appendReportLine "<table border=1 style=\"width: 100%;table-layout: fixed;\">"
+    appendReportLine "<table border=1>"
     appendReportLine "<tr>"
     appendReportLine "<th width=\"5%\">#</th>"
     appendReportLine "<th width=\"30%\">Location</th>"
@@ -47,17 +48,17 @@ function search {
     appendReportLine "</tr>"
 
     grep -IrinH $2 . | while read -r line ; do
-        local baseLine=`echo $line | cut -d/ -f2-`
-        local lineNumber=`echo $baseLine | cut -d: -f2`
-        local relativeFileLocation=`echo $baseLine | cut -d: -f1`        
+        local baseLine=`echo ${line} | cut -d/ -f2-`
+        local lineNumber=`echo ${baseLine} | cut -d: -f2`
+        local relativeFileLocation=`echo ${baseLine} | cut -d: -f1`        
         local fileLocation=`echo $1/tree/master/$relativeFileLocation#L$lineNumber`
         local fileName=`echo ${relativeFileLocation##*/}`
-        local comment=`echo $baseLine | cut -d: -f3-`
-		
+        local comment=`echo ${baseLine} | cut -d: -f3-`
+
         appendReportLine "<tr>"
-        appendReportLine "<td align=\"center\">$lineCounter</td>"
-        appendReportLine "<td><a href="$fileLocation">$fileName ($lineNumber)</a></td>"
-        appendReportLine "<td>$comment</td>"
+        appendReportLine "<td align=\"center\">${lineCounter}</td>"
+        appendReportLine "<td><a href="${fileLocation}">${fileName} (${lineNumber})</a></td>"
+        appendReportLine "<td><xmp>${comment}</xmp></td>"
         appendReportLine "<td align=\"center\"><input type=\"checkbox\"></td>"
         appendReportLine "</tr>"
 
