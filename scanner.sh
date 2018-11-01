@@ -21,10 +21,12 @@ function startReportCreation {
     appendReportLine "<link rel=\"stylesheet\" href=\"libs/styles/styles.css\">"
     appendReportLine "<script src=\"libs/javascript/jquery-1.12.4.js\"></script>"
     appendReportLine "<script src=\"libs/javascript/jquery-ui.js\"></script>"
+    appendReportLine "<script src=\"data.js\"></script>"
     appendReportLine "<script src=\"libs/javascript/main.js\"></script>"
     appendReportLine "</head>"
     appendReportLine "<body>"
     appendReportLine "<h1 align=\"center\">Code Scan Report: $projectName</h1>"
+    appendReportLine "<button onclick=\"save()\">Export selection</button>"
     appendReportLine "<div id=\"container\" style=\"padding: 0 20px\">"
 }
 
@@ -44,7 +46,7 @@ function search {
     appendReportLine "<th width=\"5%\">#</th>"
     appendReportLine "<th width=\"30%\">Location</th>"
     appendReportLine "<th width=\"57%\">Content</th>"
-    appendReportLine "<th width=\"8%\">Confirm?</th>"
+    appendReportLine "<th width=\"8%\">Verify?</th>"
     appendReportLine "</tr>"
 
     grep -IrinH $2 . | while read -r line ; do
@@ -59,7 +61,7 @@ function search {
         appendReportLine "<td align=\"center\">${lineCounter}</td>"
         appendReportLine "<td><a href="${fileLocation}">${fileName} (${lineNumber})</a></td>"
         appendReportLine "<td><xmp>${comment}</xmp></td>"
-        appendReportLine "<td align=\"center\"><input type=\"checkbox\"></td>"
+        appendReportLine "<td align=\"center\"><input id=\"${4}-${lineCounter}\" type=\"checkbox\"></td>"
         appendReportLine "</tr>"
 
         lineCounter=$((lineCounter + 1))
@@ -70,23 +72,23 @@ function search {
 }
 
 function searchForSensitiveWords {
-    search $1 $sensitiveWords "Sensitive data found"
+    search $1 $sensitiveWords "Sensitive data found" "sensitive"
 }
 
 function searchForSensitiveHttpComponents {
-    search $1 $sensitiveHttpComponents "Http related code found"
+    search $1 $sensitiveHttpComponents "Http related code found" "http"
 }
 
 function searchForSensitiveSQLComponents {
-    search $1 $sensitiveSQLComponents "SQL related code found"
+    search $1 $sensitiveSQLComponents "SQL related code found" "sql"
 }
 
 function searchForSensitiveSerializationsComponents {
-    search $1 $sensitiveSerializationsComponents "Serialization related code found"
+    search $1 $sensitiveSerializationsComponents "Serialization related code found" "serialization"
 }
 
 function searchForSensitiveAuthenticationComponents {
-    search $1 $sensitiveAuthenticationComponents "Authentication related code found"
+    search $1 $sensitiveAuthenticationComponents "Authentication related code found" "authentication"
 }
 
 printf "[INFO] Starting scan."

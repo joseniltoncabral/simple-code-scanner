@@ -1,0 +1,1 @@
+checkedElements = [];
